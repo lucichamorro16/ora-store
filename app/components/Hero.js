@@ -1,4 +1,5 @@
 import Logo from "./Logo";
+import { WHATSAPP_NUMBER } from "../lib/cartContext";
 
 export default function Hero() {
   return (
@@ -25,7 +26,12 @@ export default function Hero() {
           <a href="#catalogo" className="btn-gold px-8 py-3.5 rounded-full inline-block">
             Ver colección
           </a>
-          <a href="#contacto" className="btn-outline-gold px-8 py-3.5 rounded-full inline-block">
+          <a
+            href={`https://wa.me/${WHATSAPP_NUMBER}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-outline-gold px-8 py-3.5 rounded-full inline-block"
+          >
             Hablar por WhatsApp
           </a>
         </div>

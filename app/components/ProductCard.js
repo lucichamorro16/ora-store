@@ -73,14 +73,14 @@ export default function ProductCard({ product }) {
             {product.description}
           </p>
         )}
-        <div className="mt-auto flex items-center justify-between pt-2">
+        <div className="mt-auto flex flex-col gap-2 pt-2 sm:flex-row sm:items-center sm:justify-between">
           <span className="font-display font-medium text-ink text-lg">
             ${Number(product.price).toLocaleString("es-AR")}
           </span>
           <button
             disabled={outOfStock}
             onClick={() => addItem(product)}
-            className="btn-outline-gold px-4 py-2 rounded-full disabled:opacity-30 disabled:pointer-events-none"
+            className="btn-outline-gold w-full sm:w-auto px-4 py-2 rounded-full disabled:opacity-30 disabled:pointer-events-none"
           >
             Agregar
           </button>
