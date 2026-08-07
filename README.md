@@ -168,3 +168,23 @@ public/
   usa como firma visual (fondo del hero, separadores de sección).
 - Crédito de autoría — "Sitio creado por Lautaro Yudi" — al pie de la
   página.
+
+## 8. SEO, Analytics y páginas legales
+
+- **Imagen de portada al compartir el link** (`app/opengraph-image.png`): se genera sola,
+  no requiere configuración.
+- **robots.txt y sitemap.xml**: se generan automáticamente en `/robots.txt` y
+  `/sitemap.xml`. Usan la variable `SITE_URL` de `app/lib/constants.js`, que hoy
+  apunta a la URL de Vercel. **Una vez que conectes el dominio de nic.ar**, cambiá
+  esa constante (o cargá `NEXT_PUBLIC_SITE_URL` como variable de entorno en Vercel)
+  para que apunte al dominio final.
+- **Vercel Analytics**: ya viene integrado (`@vercel/analytics`). Para verlo
+  funcionando, andá a tu proyecto en Vercel → pestaña **Analytics** y activalo si
+  te lo pide (es gratis en el plan Hobby, con datos agregados de los últimos días).
+- **Términos y Condiciones / Política de Privacidad** (`/terminos`, `/privacidad`):
+  quedaron con un texto de partida general, marcado con `[completar]` donde hace
+  falta tu CUIT y domicilio. Antes de la puesta en producción definitiva,
+  recomendamos que los revise un contador o gestoría para que cumplan con la Ley
+  de Defensa del Consumidor (24.240).
+- **Instagram**: el link del footer apunta a `@ora.storeimp`. Si cambia el usuario,
+  se edita en `INSTAGRAM_URL` dentro de `app/lib/constants.js`.

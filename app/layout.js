@@ -1,6 +1,8 @@
 import { Cormorant_Garamond, Jost, Fraunces, Mrs_Saint_Delafield } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 import { CartProvider } from "./lib/cartContext";
+import { SITE_URL } from "./lib/constants";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -30,10 +32,27 @@ const mrsSaintDelafield = Mrs_Saint_Delafield({
   display: "swap",
 });
 
+const title = "Ora Store | Perfumería Árabe";
+const description =
+  "Perfumería árabe de autor. Fragancias intensas y duraderas, inspiradas en el oriente. Ora Store.";
+
 export const metadata = {
-  title: "Ora Store | Perfumes Árabes",
-  description:
-    "Perfumería árabe de autor. Fragancias intensas y duraderas, inspiradas en el oriente. Ora Store.",
+  metadataBase: new URL(SITE_URL),
+  title,
+  description,
+  openGraph: {
+    title,
+    description,
+    url: SITE_URL,
+    siteName: "Ora Store",
+    locale: "es_AR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+  },
 };
 
 export default function RootLayout({ children }) {
@@ -44,6 +63,7 @@ export default function RootLayout({ children }) {
     >
       <body>
         <CartProvider>{children}</CartProvider>
+        <Analytics />
       </body>
     </html>
   );

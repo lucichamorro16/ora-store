@@ -1,5 +1,5 @@
 import Logo from "./Logo";
-import { WHATSAPP_NUMBER } from "../lib/constants";
+import { WHATSAPP_NUMBER, INSTAGRAM_URL } from "../lib/constants";
 
 export default function Footer() {
   return (
@@ -11,6 +11,20 @@ export default function Footer() {
             Perfumería árabe seleccionada con criterio: fragancias intensas,
             concentradas y de larga duración, para quienes eligen dejar huella.
           </p>
+          <a
+            href={INSTAGRAM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram de Ora Store"
+            className="mt-4 inline-flex items-center gap-2 text-parchment/60 hover:text-parchment transition-colors"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="5" />
+              <circle cx="12" cy="12" r="4" />
+              <circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none" />
+            </svg>
+            <span className="font-body text-xs">@ora.storeimp</span>
+          </a>
         </div>
 
         <div>
@@ -33,12 +47,26 @@ export default function Footer() {
           <p className="font-body font-light text-parchment/40 text-xs leading-relaxed">
             © {new Date().getFullYear()} Ora Store. Todos los derechos reservados.
           </p>
-          <a
-            href="/admin"
-            className="font-body font-light text-parchment/30 text-[11px] mt-3 inline-block hover:text-parchment/60"
-          >
-            Acceso administrador
-          </a>
+          <div className="flex flex-col gap-1.5 mt-3">
+            <a
+              href="/terminos"
+              className="font-body font-light text-parchment/30 text-[11px] hover:text-parchment/60"
+            >
+              Términos y condiciones
+            </a>
+            <a
+              href="/privacidad"
+              className="font-body font-light text-parchment/30 text-[11px] hover:text-parchment/60"
+            >
+              Política de privacidad
+            </a>
+            <a
+              href="/admin"
+              className="font-body font-light text-parchment/30 text-[11px] hover:text-parchment/60"
+            >
+              Acceso administrador
+            </a>
+          </div>
         </div>
       </div>
 
