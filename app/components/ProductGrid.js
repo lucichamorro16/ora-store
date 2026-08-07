@@ -12,28 +12,81 @@ function normalize(text) {
     .toLowerCase();
 }
 
+// productos con stock primero, agotados al final, sin tocar el resto del orden
+function sortByStock(list) {
+  return [...list].sort((a, b) => {
+    const aOut = (a.stock ?? 0) <= 0 ? 1 : 0;
+    const bOut = (b.stock ?? 0) <= 0 ? 1 : 0;
+    return aOut - bOut;
+  });
+}
+
+const PREFERRED_ORDER = ["Hombre", "Mujer", "Unisex"];
+
+function sortCategories(categories) {
+  const preferred = PREFERRED_ORDER.filter((c) => categories.includes(c));
+  const rest = categories
+    .filter((c) => !PREFERRED_ORDER.includes(c))
+    .sort((a, b) => a.localeCompare(b, "es"));
+  return [...preferred, ...rest];
+}
+
+function ProductRow({ title, products }) {
+  return (
+    <div className="mb-14 last:mb-0">
+      <h3 className="font-display font-light text-ink text-xl md:text-2xl mb-5 tracking-wide">
+        {title}
+      </h3>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+        {products.map((p) => (
+          <ProductCard key={p.id} product={p} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function ProductGrid({ products }) {
-  const [category, setCategory] = useState("Todos");
   const [query, setQuery] = useState("");
 
   const categories = useMemo(() => {
     const set = new Set(products.map((p) => p.category).filter(Boolean));
-    return ["Todos", ...Array.from(set)];
+    return sortCategories(Array.from(set));
   }, [products]);
 
-  const filtered = useMemo(() => {
-    const q = normalize(query.trim());
-    return products.filter((p) => {
-      const matchesCategory = category === "Todos" || p.category === category;
-      if (!matchesCategory) return false;
-      if (!q) return true;
-      return (
-        normalize(p.name).includes(q) ||
-        normalize(p.description).includes(q) ||
-        normalize(p.category).includes(q)
-      );
-    });
-  }, [products, category, query]);
+  const hasUncategorized = useMemo(
+    () => products.some((p) => !p.category),
+    [products]
+  );
+
+  const q = normalize(query.trim());
+
+  const searchFiltered = useMemo(() => {
+    if (!q) return null;
+    return sortByStock(
+      products.filter(
+        (p) =>
+          normalize(p.name).includes(q) ||
+          normalize(p.description).includes(q) ||
+          normalize(p.category).includes(q)
+      )
+    );
+  }, [products, q]);
+
+  const groups = useMemo(() => {
+    if (searchFiltered) return null;
+    const byCategory = categories.map((cat) => ({
+      title: cat,
+      products: sortByStock(products.filter((p) => p.category === cat)),
+    }));
+    if (hasUncategorized) {
+      byCategory.push({
+        title: "Otros",
+        products: sortByStock(products.filter((p) => !p.category)),
+      });
+    }
+    return byCategory.filter((g) => g.products.length > 0);
+  }, [products, categories, hasUncategorized, searchFiltered]);
 
   return (
     <section id="catalogo" className="bg-parchment py-20 md:py-28">
@@ -41,30 +94,12 @@ export default function ProductGrid({ products }) {
         <div className="divider-star font-display text-sm tracking-[0.3em] uppercase mb-3">
           <span>Catálogo</span>
         </div>
-        <h2 className="font-display font-light text-ink text-3xl md:text-4xl mb-10 tracking-wide">
-          Nuestras esencias
-        </h2>
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5 mb-10">
+          <h2 className="font-display font-light text-ink text-3xl md:text-4xl tracking-wide">
+            Nuestras esencias
+          </h2>
 
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-10">
-          {categories.length > 1 && (
-            <div className="flex flex-wrap gap-3">
-              {categories.map((c) => (
-                <button
-                  key={c}
-                  onClick={() => setCategory(c)}
-                  className={`px-4 py-1.5 rounded-full text-[11px] tracking-[0.15em] uppercase font-body border transition-colors ${
-                    category === c
-                      ? "bg-ink text-parchment border-ink"
-                      : "border-ink/25 text-ink/60 hover:border-ink/60"
-                  }`}
-                >
-                  {c}
-                </button>
-              ))}
-            </div>
-          )}
-
-          <div className="relative w-full md:w-64 md:ml-auto">
+          <div className="relative w-full md:w-64">
             <svg
               width="14"
               height="14"
@@ -96,18 +131,26 @@ export default function ProductGrid({ products }) {
           </div>
         </div>
 
-        {filtered.length === 0 ? (
-          <p className="font-body text-ink/50 text-sm">
-            {query
-              ? `No encontramos ningún perfume que coincida con "${query}".`
-              : "Todavía no hay productos cargados en esta categoría. Volvé pronto."}
-          </p>
+        {searchFiltered ? (
+          searchFiltered.length === 0 ? (
+            <p className="font-body text-ink/50 text-sm">
+              No encontramos ningún perfume que coincida con "{query}".
+            </p>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+              {searchFiltered.map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
+          )
+        ) : groups && groups.length > 0 ? (
+          groups.map((g) => (
+            <ProductRow key={g.title} title={g.title} products={g.products} />
+          ))
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-            {filtered.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </div>
+          <p className="font-body text-ink/50 text-sm">
+            Todavía no hay productos cargados. Volvé pronto.
+          </p>
         )}
       </div>
     </section>

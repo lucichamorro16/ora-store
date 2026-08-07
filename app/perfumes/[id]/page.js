@@ -6,6 +6,7 @@ import Footer from "../../components/Footer";
 import CartDrawer from "../../components/CartDrawer";
 import ProductGallery from "../../components/ProductGallery";
 import ProductDetailAddToCart from "../../components/ProductDetailAddToCart";
+import ShareButton from "../../components/ShareButton";
 
 export const revalidate = 0;
 
@@ -48,8 +49,9 @@ export default async function ProductPage({ params }) {
   if (!product) notFound();
 
   const outOfStock = (product.stock ?? 0) <= 0;
+  const productUrl = `${SITE_URL}/perfumes/${product.id}`;
 
-  const jsonLd = {
+  const productJsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
@@ -63,27 +65,56 @@ export default async function ProductPage({ params }) {
       availability: outOfStock
         ? "https://schema.org/OutOfStock"
         : "https://schema.org/InStock",
-      url: `${SITE_URL}/perfumes/${product.id}`,
+      url: productUrl,
     },
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Ora Store", item: SITE_URL },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Perfumes",
+        item: `${SITE_URL}/#catalogo`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: product.name,
+        item: productUrl,
+      },
+    ],
   };
 
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <Header />
       <main className="bg-parchment">
         <div className="mx-auto max-w-5xl px-5 md:px-8 py-10 md:py-16">
-          <a
-            href="/#catalogo"
-            className="font-body text-xs uppercase tracking-[0.15em] text-ink/50 hover:text-ink transition-colors"
-          >
-            ← Volver al catálogo
-          </a>
+          <nav aria-label="Breadcrumb" className="font-body text-xs text-ink/40 mb-6">
+            <a href="/" className="hover:text-ink transition-colors">
+              Ora Store
+            </a>
+            <span className="mx-2">/</span>
+            <a href="/#catalogo" className="hover:text-ink transition-colors">
+              Perfumes
+            </a>
+            <span className="mx-2">/</span>
+            <span className="text-ink/60">{product.name}</span>
+          </nav>
 
-          <div className="grid md:grid-cols-2 gap-10 md:gap-14 mt-6">
+          <div className="grid md:grid-cols-2 gap-10 md:gap-14">
             <ProductGallery images={product.images ?? []} name={product.name} />
 
             <div className="flex flex-col">
@@ -113,10 +144,17 @@ export default async function ProductPage({ params }) {
 
               <ProductDetailAddToCart product={product} />
 
-              <p className="font-body text-ink/40 text-xs mt-6 leading-relaxed">
-                El pago y el envío se coordinan por WhatsApp una vez armado tu
-                pedido en el carrito.
-              </p>
+              <div className="flex items-center justify-between mt-6">
+                <p className="font-body text-ink/40 text-xs leading-relaxed max-w-[220px]">
+                  El pago y el envío se coordinan por WhatsApp una vez armado tu
+                  pedido en el carrito.
+                </p>
+                <ShareButton
+                  title={product.name}
+                  text={`Mirá ${product.name} en Ora Store`}
+                  url={productUrl}
+                />
+              </div>
             </div>
           </div>
         </div>
