@@ -1,5 +1,5 @@
 import Logo from "./Logo";
-import { WHATSAPP_NUMBER } from "../lib/cartContext";
+import { WHATSAPP_NUMBER } from "../lib/constants";
 
 export default function Hero() {
   return (
