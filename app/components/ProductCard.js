@@ -18,21 +18,29 @@ export default function ProductCard({ product }) {
 
   return (
     <div className="product-card rounded-xl overflow-hidden flex flex-col">
-      <div className="relative aspect-square bg-oud" onClick={cycleImage}>
+      <div
+        className={`relative aspect-square bg-oud overflow-hidden ${images.length > 1 ? "cursor-pointer" : ""}`}
+        onClick={cycleImage}
+      >
         {images.length > 0 ? (
-          <Image
-            src={images[activeIndex]}
-            alt={product.name}
-            fill
-            sizes="(max-width: 768px) 50vw, 25vw"
-            className="object-cover"
-          />
+          images.map((src, i) => (
+            <Image
+              key={src + i}
+              src={src}
+              alt={product.name}
+              fill
+              sizes="(max-width: 768px) 50vw, 25vw"
+              className={`object-cover transition-all duration-500 ease-out ${
+                i === activeIndex ? "opacity-100 scale-100" : "opacity-0 scale-105"
+              }`}
+            />
+          ))
         ) : (
           <div className="w-full h-full flex items-center justify-center text-gold/30 star-mark w-16 h-16 mx-auto my-auto" />
         )}
 
         {images.length > 1 && (
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1.5">
             {images.map((_, i) => (
               <button
                 key={i}
@@ -42,8 +50,8 @@ export default function ProductCard({ product }) {
                   setActiveIndex(i);
                 }}
                 aria-label={`Ver foto ${i + 1}`}
-                className={`w-1.5 h-1.5 rounded-full transition-colors ${
-                  i === activeIndex ? "bg-parchment" : "bg-parchment/40"
+                className={`h-1.5 rounded-full transition-all duration-300 ease-out ${
+                  i === activeIndex ? "w-4 bg-parchment" : "w-1.5 bg-parchment/40"
                 }`}
               />
             ))}

@@ -14,8 +14,8 @@ export default function Hero() {
           Perfumería
         </p>
 
-        <h1 className="font-script text-ink text-4xl sm:text-5xl md:text-6xl leading-relaxed max-w-3xl">
-          «Sutileza y elegancia en cada aroma»
+        <h1 className="font-script font-normal text-ink text-4xl sm:text-5xl md:text-6xl leading-relaxed max-w-3xl">
+          "Sutileza y elegancia en cada aroma"
         </h1>
 
         <p className="font-body font-light max-w-lg mx-auto mt-6 text-sm leading-relaxed text-ink/60">
