@@ -3,6 +3,7 @@ import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 import { CartProvider } from "./lib/cartContext";
 import { SITE_URL } from "./lib/constants";
+import WhatsAppFloat from "./components/WhatsAppFloat";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -55,6 +56,10 @@ export const metadata = {
   },
 };
 
+export const viewport = {
+  themeColor: "#141414",
+};
+
 export default function RootLayout({ children }) {
   return (
     <html
@@ -63,6 +68,7 @@ export default function RootLayout({ children }) {
     >
       <body>
         <CartProvider>{children}</CartProvider>
+        <WhatsAppFloat />
         <Analytics />
       </body>
     </html>

@@ -1,8 +1,10 @@
 import { SITE_URL } from "./lib/constants";
+import { supabase } from "./lib/supabaseClient";
 
-export default function sitemap() {
+export default async function sitemap() {
   const now = new Date();
-  return [
+
+  const staticRoutes = [
     {
       url: SITE_URL,
       lastModified: now,
@@ -22,4 +24,18 @@ export default function sitemap() {
       priority: 0.3,
     },
   ];
+
+  const { data: products } = await supabase
+    .from("products")
+    .select("id, created_at")
+    .eq("active", true);
+
+  const productRoutes = (products ?? []).map((p) => ({
+    url: `${SITE_URL}/perfumes/${p.id}`,
+    lastModified: p.created_at ? new Date(p.created_at) : now,
+    changeFrequency: "weekly",
+    priority: 0.7,
+  }));
+
+  return [...staticRoutes, ...productRoutes];
 }

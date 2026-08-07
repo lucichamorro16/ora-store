@@ -2,11 +2,15 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useCart } from "../lib/cartContext";
+
+const LOW_STOCK_THRESHOLD = 3;
 
 export default function ProductCard({ product }) {
   const { addItem } = useCart();
   const outOfStock = (product.stock ?? 0) <= 0;
+  const lowStock = !outOfStock && (product.stock ?? 0) <= LOW_STOCK_THRESHOLD;
   const images = product.images ?? [];
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -58,6 +62,12 @@ export default function ProductCard({ product }) {
           </div>
         )}
 
+        {lowStock && (
+          <span className="absolute top-2 left-2 font-body text-[9px] tracking-[0.12em] uppercase bg-parchment text-ink px-2 py-1 rounded-full">
+            Últimas unidades
+          </span>
+        )}
+
         {outOfStock && (
           <div className="absolute inset-0 bg-ink/70 flex items-center justify-center">
             <span className="font-body text-[11px] tracking-[0.2em] uppercase text-parchment/80 border border-gold/40 px-3 py-1.5 rounded-full">
@@ -73,9 +83,11 @@ export default function ProductCard({ product }) {
             {product.category}
           </span>
         )}
-        <h3 className="font-display text-ink text-lg leading-snug mb-1">
-          {product.name}
-        </h3>
+        <Link href={`/perfumes/${product.id}`} className="group">
+          <h3 className="font-display text-ink text-lg leading-snug mb-1 group-hover:underline decoration-ink/30 underline-offset-4">
+            {product.name}
+          </h3>
+        </Link>
         {product.description && (
           <p className="font-body text-ink/50 text-xs leading-relaxed mb-4 line-clamp-2">
             {product.description}

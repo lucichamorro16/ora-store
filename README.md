@@ -182,9 +182,28 @@ public/
   funcionando, andá a tu proyecto en Vercel → pestaña **Analytics** y activalo si
   te lo pide (es gratis en el plan Hobby, con datos agregados de los últimos días).
 - **Términos y Condiciones / Política de Privacidad** (`/terminos`, `/privacidad`):
-  quedaron con un texto de partida general, marcado con `[completar]` donde hace
-  falta tu CUIT y domicilio. Antes de la puesta en producción definitiva,
-  recomendamos que los revise un contador o gestoría para que cumplan con la Ley
-  de Defensa del Consumidor (24.240).
+  texto general que describe cómo funciona realmente la tienda (venta coordinada
+  por WhatsApp, sin cuentas de usuario). No reemplaza una revisión profesional:
+  antes de la puesta en producción definitiva, recomendamos que un contador o
+  gestoría lo revise para que cumpla con la Ley de Defensa del Consumidor (24.240).
 - **Instagram**: el link del footer apunta a `@ora.storeimp`. Si cambia el usuario,
   se edita en `INSTAGRAM_URL` dentro de `app/lib/constants.js`.
+
+## 9. Botón flotante, stock bajo, fichas de producto y "agregar a inicio"
+
+- **Botón flotante de WhatsApp**: aparece fijo abajo a la derecha en toda la tienda
+  (no en `/admin`). Usa el mismo `WHATSAPP_NUMBER` de `app/lib/constants.js`.
+- **Aviso de últimas unidades**: si un producto tiene 3 unidades o menos en stock
+  (y más de 0), se muestra un cartel "Últimas unidades" en la tarjeta y en la
+  ficha del producto. El umbral se puede cambiar en `LOW_STOCK_THRESHOLD` dentro
+  de `app/components/ProductCard.js`.
+- **Ficha individual por producto** (`/perfumes/[id]`): cada perfume tiene su
+  propia URL, compartible por WhatsApp o Instagram, con su propia metaetiqueta de
+  título/descripción y datos estructurados (`schema.org/Product`) para que Google
+  pueda mostrar precio y disponibilidad directo en los resultados de búsqueda. Se
+  accede tocando el nombre del producto desde el catálogo.
+- **Agregar a pantalla de inicio**: gracias al `app/manifest.js`, en el celular
+  se puede "agregar" Ora Store como si fuera una app, con su ícono propio.
+
+Todo esto ya está reflejado en el `sitemap.xml`, que ahora también lista cada
+producto activo individualmente.
