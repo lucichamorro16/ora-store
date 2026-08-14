@@ -45,6 +45,7 @@ export default function ProductCard({ product }) {
               src={src}
               alt={product.name}
               fill
+              unoptimized
               sizes="(max-width: 768px) 50vw, 25vw"
               className={`object-cover transition-all duration-500 ease-out active:scale-[0.97] ${
                 i === activeIndex ? "opacity-100 scale-100" : "opacity-0 scale-105"
@@ -112,20 +113,20 @@ export default function ProductCard({ product }) {
             {product.description}
           </p>
         )}
-        <div className="mt-auto flex flex-col gap-2 pt-2 sm:flex-row sm:items-center sm:justify-between">
-          <span className="font-display font-medium text-ink text-lg">
-            {needsQuote ? "Consultar" : `$${Number(product.price).toLocaleString("es-AR")}`}
-          </span>
-          {needsQuote ? (
-            <a
-              href={consultLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-outline-gold w-full sm:w-auto px-4 py-2 rounded-full text-center"
-            >
-              Consultar
-            </a>
-          ) : (
+        {needsQuote ? (
+          <a
+            href={consultLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-outline-gold w-full mt-auto pt-2 px-4 py-2 rounded-full text-center"
+          >
+            Consultar Stock
+          </a>
+        ) : (
+          <div className="mt-auto flex flex-col gap-2 pt-2 sm:flex-row sm:items-center sm:justify-between">
+            <span className="font-display font-medium text-ink text-lg">
+              ${Number(product.price).toLocaleString("es-AR")}
+            </span>
             <button
               disabled={outOfStock}
               onClick={() => addItem(product)}
@@ -133,8 +134,8 @@ export default function ProductCard({ product }) {
             >
               Agregar
             </button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

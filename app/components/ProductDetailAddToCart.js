@@ -28,7 +28,7 @@ export default function ProductDetailAddToCart({ product }) {
         rel="noopener noreferrer"
         className="btn-gold w-full py-3 rounded-full text-center inline-block"
       >
-        Consultar por WhatsApp
+        Consultar Stock por WhatsApp
       </a>
     );
   }

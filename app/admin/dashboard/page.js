@@ -287,7 +287,7 @@ export default function AdminDashboardPage() {
               <div className="flex flex-wrap gap-2 mb-3">
                 {form.images.map((url) => (
                   <div key={url} className="relative w-16 h-16 rounded-lg overflow-hidden border border-ink/15">
-                    <Image src={url} alt="" fill className="object-cover" />
+                    <Image src={url} alt="" fill unoptimized className="object-cover" />
                     <button
                       type="button"
                       onClick={() => removeExistingImage(url)}
@@ -384,7 +384,7 @@ export default function AdminDashboardPage() {
                 className="flex items-center gap-4 bg-white border border-ink/10 rounded-lg p-3"
               >
                 <div className="relative w-12 h-12 rounded-md overflow-hidden bg-parchment flex-shrink-0">
-                  {p.images?.[0] && <Image src={p.images[0]} alt="" fill className="object-cover" />}
+                  {p.images?.[0] && <Image src={p.images[0]} alt="" fill unoptimized className="object-cover" />}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-body text-ink text-sm truncate">{p.name}</p>

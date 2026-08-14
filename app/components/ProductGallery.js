@@ -41,6 +41,7 @@ export default function ProductGallery({ images, name }) {
               src={src}
               alt={name}
               fill
+              unoptimized
               sizes="(max-width: 768px) 100vw, 50vw"
               priority={i === 0}
               className={`object-cover transition-all duration-500 ease-out active:scale-[0.98] ${
@@ -97,13 +98,19 @@ export default function ProductGallery({ images, name }) {
           </button>
 
           <div
-            className="relative w-full max-w-xl aspect-square animate-[zoomIn_0.3s_ease-out]"
-            onClick={(e) => e.stopPropagation()}
+            className={`relative w-full max-w-xl aspect-square animate-[zoomIn_0.3s_ease-out] ${
+              images.length > 1 ? "cursor-pointer" : ""
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (images.length > 1) goToImage((activeIndex + 1) % images.length);
+            }}
           >
             <Image
               src={images[activeIndex]}
               alt={name}
               fill
+              unoptimized
               sizes="90vw"
               className="object-contain"
             />

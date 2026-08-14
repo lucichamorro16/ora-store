@@ -98,7 +98,7 @@ export default function CartDrawer() {
                 >
                   <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-ink flex-shrink-0">
                     {item.image && (
-                      <Image src={item.image} alt={item.name} fill className="object-cover" />
+                      <Image src={item.image} alt={item.name} fill unoptimized className="object-cover" />
                     )}
                   </div>
                   <div className="flex-1 min-w-0 flex flex-col">
