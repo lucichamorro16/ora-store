@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "../lib/cartContext";
+import { WHATSAPP_NUMBER } from "../lib/constants";
 
 const LOW_STOCK_THRESHOLD = 3;
 
@@ -11,14 +12,25 @@ export default function ProductCard({ product }) {
   const { addItem } = useCart();
   const outOfStock = (product.stock ?? 0) <= 0;
   const lowStock = !outOfStock && (product.stock ?? 0) <= LOW_STOCK_THRESHOLD;
+  const needsQuote = !product.price || Number(product.price) <= 0;
   const images = product.images ?? [];
   const [activeIndex, setActiveIndex] = useState(0);
+  const [flashKey, setFlashKey] = useState(0);
+
+  function goToImage(index) {
+    setActiveIndex(index);
+    setFlashKey((k) => k + 1);
+  }
 
   function cycleImage(e) {
     if (images.length < 2) return;
     e.preventDefault();
-    setActiveIndex((i) => (i + 1) % images.length);
+    goToImage((activeIndex + 1) % images.length);
   }
+
+  const consultLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+    `Hola! Quiero consultar precio y stock de ${product.name}`
+  )}`;
 
   return (
     <div className="product-card rounded-xl overflow-hidden flex flex-col">
@@ -34,13 +46,20 @@ export default function ProductCard({ product }) {
               alt={product.name}
               fill
               sizes="(max-width: 768px) 50vw, 25vw"
-              className={`object-cover transition-all duration-500 ease-out ${
+              className={`object-cover transition-all duration-500 ease-out active:scale-[0.97] ${
                 i === activeIndex ? "opacity-100 scale-100" : "opacity-0 scale-105"
               }`}
             />
           ))
         ) : (
           <div className="w-full h-full flex items-center justify-center text-gold/30 star-mark w-16 h-16 mx-auto my-auto" />
+        )}
+
+        {flashKey > 0 && (
+          <div
+            key={flashKey}
+            className="photo-flash pointer-events-none absolute inset-0 bg-parchment"
+          />
         )}
 
         {images.length > 1 && (
@@ -51,7 +70,7 @@ export default function ProductCard({ product }) {
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setActiveIndex(i);
+                  goToImage(i);
                 }}
                 aria-label={`Ver foto ${i + 1}`}
                 className={`h-1.5 rounded-full transition-all duration-300 ease-out ${
@@ -95,15 +114,26 @@ export default function ProductCard({ product }) {
         )}
         <div className="mt-auto flex flex-col gap-2 pt-2 sm:flex-row sm:items-center sm:justify-between">
           <span className="font-display font-medium text-ink text-lg">
-            ${Number(product.price).toLocaleString("es-AR")}
+            {needsQuote ? "Consultar" : `$${Number(product.price).toLocaleString("es-AR")}`}
           </span>
-          <button
-            disabled={outOfStock}
-            onClick={() => addItem(product)}
-            className="btn-outline-gold w-full sm:w-auto px-4 py-2 rounded-full disabled:opacity-30 disabled:pointer-events-none"
-          >
-            Agregar
-          </button>
+          {needsQuote ? (
+            <a
+              href={consultLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-outline-gold w-full sm:w-auto px-4 py-2 rounded-full text-center"
+            >
+              Consultar
+            </a>
+          ) : (
+            <button
+              disabled={outOfStock}
+              onClick={() => addItem(product)}
+              className="btn-outline-gold w-full sm:w-auto px-4 py-2 rounded-full disabled:opacity-30 disabled:pointer-events-none"
+            >
+              Agregar
+            </button>
+          )}
         </div>
       </div>
     </div>

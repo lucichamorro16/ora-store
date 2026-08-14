@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { supabase } from "../../lib/supabaseClient";
+import { resizeImage } from "../../lib/imageResize";
 
 const MAX_IMAGES = 3;
 
@@ -80,11 +81,25 @@ export default function AdminDashboardPage() {
   const totalImageCount = form.images.length + newFiles.length;
   const slotsLeft = MAX_IMAGES - totalImageCount;
 
-  function handleFilesSelected(e) {
+  const [processingImages, setProcessingImages] = useState(false);
+
+  async function handleFilesSelected(e) {
     const picked = Array.from(e.target.files ?? []);
     if (picked.length === 0) return;
-    setNewFiles((prev) => [...prev, ...picked].slice(0, MAX_IMAGES - form.images.length));
     e.target.value = ""; // permite volver a elegir el mismo archivo si lo saca y lo agrega de nuevo
+
+    const toProcess = picked.slice(0, MAX_IMAGES - form.images.length - newFiles.length);
+    setProcessingImages(true);
+    try {
+      const resized = await Promise.all(
+        toProcess.map((file) =>
+          resizeImage(file).catch(() => file) // si falla el ajuste, usa el archivo original igual
+        )
+      );
+      setNewFiles((prev) => [...prev, ...resized].slice(0, MAX_IMAGES - form.images.length));
+    } finally {
+      setProcessingImages(false);
+    }
   }
 
   function removeExistingImage(url) {
@@ -264,6 +279,9 @@ export default function AdminDashboardPage() {
             <label className="font-body text-[11px] uppercase tracking-wide text-ink/60 block mb-1.5">
               Fotos del producto ({totalImageCount}/{MAX_IMAGES})
             </label>
+            <p className="font-body text-ink/40 text-[11px] mb-2">
+              Se ajustan y comprimen solas al elegirlas, no hace falta editarlas antes.
+            </p>
 
             {(form.images.length > 0 || newFiles.length > 0) && (
               <div className="flex flex-wrap gap-2 mb-3">
@@ -302,13 +320,19 @@ export default function AdminDashboardPage() {
             )}
 
             {slotsLeft > 0 ? (
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleFilesSelected}
-                className="font-body text-ink/60 text-xs"
-              />
+              <>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleFilesSelected}
+                  disabled={processingImages}
+                  className="font-body text-ink/60 text-xs disabled:opacity-50"
+                />
+                {processingImages && (
+                  <p className="font-body text-ink/40 text-[11px] mt-1">Ajustando fotos...</p>
+                )}
+              </>
             ) : (
               <p className="font-body text-ink/40 text-xs">
                 Ya cargaste el máximo de {MAX_IMAGES} fotos. Sacá alguna para agregar otra.

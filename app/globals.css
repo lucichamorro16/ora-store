@@ -56,6 +56,19 @@ body {
   background: linear-gradient(to right, transparent, #9c9077, transparent);
 }
 
+/* ---------- Destello sutil al cambiar de foto ---------- */
+@keyframes photoFlash {
+  from {
+    opacity: 0.3;
+  }
+  to {
+    opacity: 0;
+  }
+}
+.photo-flash {
+  animation: photoFlash 0.45s ease-out forwards;
+}
+
 /* ---------- Product card ---------- */
 .product-card {
   background: #ffffff;

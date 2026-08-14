@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { useCart } from "../lib/cartContext";
+import { WHATSAPP_NUMBER } from "../lib/constants";
 
 export default function ProductDetailAddToCart({ product }) {
   const { addItem } = useCart();
   const outOfStock = (product.stock ?? 0) <= 0;
+  const needsQuote = !product.price || Number(product.price) <= 0;
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
 
@@ -13,6 +15,22 @@ export default function ProductDetailAddToCart({ product }) {
     addItem(product, qty);
     setAdded(true);
     setTimeout(() => setAdded(false), 1800);
+  }
+
+  if (needsQuote) {
+    const consultLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+      `Hola! Quiero consultar precio y stock de ${product.name}`
+    )}`;
+    return (
+      <a
+        href={consultLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="btn-gold w-full py-3 rounded-full text-center inline-block"
+      >
+        Consultar por WhatsApp
+      </a>
+    );
   }
 
   return (

@@ -127,7 +127,9 @@ export default async function ProductPage({ params }) {
                 {product.name}
               </h1>
               <span className="font-display font-medium text-ink text-2xl mb-6">
-                ${Number(product.price).toLocaleString("es-AR")}
+                {!product.price || Number(product.price) <= 0
+                  ? "Consultar precio"
+                  : `$${Number(product.price).toLocaleString("es-AR")}`}
               </span>
 
               {product.description && (
